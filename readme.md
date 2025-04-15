@@ -1,10 +1,24 @@
 ## 一个jandan的第三方Terminal客户端
-支持阅读 树洞、问答板块。仅支持浏览。
+支持阅读 树洞、问答板块，并且可以查看吐槽。
+仅支持浏览，不支持oo xx 和评论。
 
 使用：
 ```bash
 node treehole.js
 node qa.js
+```
+## node 安装方法
+如果你没用过node。我建议你使用nvm安装node，不仅能管理多版本，安装也非常快。
+
+https://github.com/nvm-sh/nvm
+
+https://github.com/coreybutler/nvm-windows
+
+nvm 安装 使用 指定版本 node
+WINDOWS 装完后要重启才能用
+```
+nvm install 20.11.1
+nvm use 20.11.1
 ```
 
 ## 截图
