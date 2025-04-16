@@ -28,3 +28,8 @@ nvm use 20.11.1
 ## 推荐
 windows电脑可以配合 [magpie](https://github.com/Blinue/Magpie) 使用。magpie是一个能够全屏任意窗口的小软件。  
 用在terminal上就可以相当于把字放的非常大，很适合老年人）
+
+
+## 快捷方式
+mac/linux 可以使用zshrc/bashrc  
+windows可以使用  code $PROFILE  
