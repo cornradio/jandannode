@@ -32,4 +32,18 @@ windows电脑可以配合 [magpie](https://github.com/Blinue/Magpie) 使用。ma
 
 ## 快捷方式
 mac/linux 可以使用zshrc/bashrc  
+```
+alias jdtreehole='node "$HOME/jandannode/treehole.js"'
+alias jdqa='node "$HOME/jandannode/qa.js"'
+```
+
 windows可以使用  code $PROFILE  
+
+```
+function jdtreehole {
+	node "C:\Users\x\Documents\GitHub\jandannode\treehole.js"
+}
+function jdqa {
+	node "C:\Users\x\Documents\GitHub\jandannode\qa.js"
+}
+```
