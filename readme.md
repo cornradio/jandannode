@@ -47,3 +47,8 @@ function jdqa {
 	node "C:\Users\x\Documents\GitHub\jandannode\qa.js"
 }
 ```
+
+如果报错 需要在powershell中执行 
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+```
