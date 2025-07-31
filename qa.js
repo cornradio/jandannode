@@ -6,7 +6,8 @@ const readline = require('readline');
 
 const postId = process.argv[2] || '88399';
 
-let currentPage = 1;
+let currentPage = 5; // 探测起始页
+let totalPages = 0; // 总页数
 let comments = [];
 let index = 0;
 let currentTucao = null;
@@ -21,9 +22,31 @@ function fetchComments(postId, page = 1) {
         try {
           const json = JSON.parse(data);
           if (json.code === 0) {
-            resolve(json.data.list);
+            resolve(json.data);
           } else {
-            reject(new Error('API 返回错误'));
+            reject(new Error(`API 返回错误: ${json.code} - ${json.msg || '未知错误'}`));
+          }
+        } catch (e) {
+          reject(new Error('JSON 解析失败'));
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+function detectTotalPages(postId) {
+  return new Promise((resolve, reject) => {
+    const url = `https://jandan.net/api/comment/post/${postId}?order=desc&page=5`;
+    https.get(url, res => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (json.code === 0) {
+            resolve(json.data.total_pages);
+          } else {
+            reject(new Error(`探测API 返回错误: ${json.code} - ${json.msg || '未知错误'}`));
           }
         } catch (e) {
           reject(new Error('JSON 解析失败'));
@@ -45,7 +68,7 @@ function fetchTucao(commentId) {
           if (json.code === 0) {
             resolve(json.tucao);
           } else {
-            reject(new Error('API 返回错误'));
+            reject(new Error(`评论API 返回错误: ${json.code} - ${json.msg || '未知错误'}`));
           }
         } catch (e) {
           reject(new Error('JSON 解析失败'));
@@ -98,17 +121,17 @@ function printComment(comment, index, page) {
 async function loadPage(pageNum) {
   console.clear();
   console.log('【正在获取问答，请稍候……】');
-  const newComments = await fetchComments(postId, pageNum);
-  if (!newComments.length) {
+  const data = await fetchComments(postId, pageNum);
+  if (!data.list || !data.list.length) {
     console.log('🚫 没有更多问答了。');
     process.exit(0);
   }
-  return newComments;
+  return data.list;
 }
 
 async function nextComment() {
   if (index >= comments.length - 1) {
-    currentPage++;
+    currentPage--;
     index = 0;
     comments = await loadPage(currentPage);
   } else {
@@ -119,8 +142,8 @@ async function nextComment() {
 }
 
 async function prevComment() {
-  if (index <= 0 && currentPage > 1) {
-    currentPage--;
+  if (index <= 0 && currentPage < totalPages) {
+    currentPage++;
     comments = await loadPage(currentPage);
     index = comments.length - 1;
   } else if (index > 0) {
@@ -147,6 +170,11 @@ async function main() {
   if (process.stdin.isTTY) process.stdin.setRawMode(true);
 
   try {
+    console.clear();
+    console.log('🔍 正在探测总页数...');
+    totalPages = await detectTotalPages(postId);
+    console.log(`📊 总页数: ${totalPages}`);
+    currentPage = totalPages; // 从最新页开始
     comments = await loadPage(currentPage);
     printComment(comments[index], index, currentPage);
 
