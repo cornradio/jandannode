@@ -36,7 +36,7 @@ function fetchComments(postId, page = 1) {
 
 function detectTotalPages(postId) {
   return new Promise((resolve, reject) => {
-    const url = `https://jandan.net/api/comment/post/${postId}?order=desc&page=200`;//默认 page=200，一般jandan 21x 页的 treehole，如果访问很老的需要 cookie
+    const url = `https://jandan.net/api/comment/post/${postId}?order=desc&page=0`;//默认 page=200，一般jandan 21x 页的 treehole，如果访问很老的需要 cookie
     https.get(url, res => {
       let data = '';
       res.on('data', chunk => data += chunk);
